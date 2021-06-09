@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+  
+  runs-on: ubuntu-latest
+  
+  steps:
+  - uses: actions/checkout@v1
+  - name: Run whatever
+    run: echo test
+  -name: run more lines
+    run: |
+      echo whatever 1
+      echo whatever 2
