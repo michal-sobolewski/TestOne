@@ -1,0 +1,50 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI UAT
+
+# Controls when the action will run. 
+on:
+# Triggers the workflow on push or pull request events but only for the Master branch
+  push:
+    branches:
+      - UAT
+    paths:  
+      - 'force-app/**'
+  pull_request:
+    branches: 
+      - UAT
+    paths:  
+      - 'force-app/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build-deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: 'Checkout source code'
+        uses: actions/checkout@v2
+
+     
+      - name: 'Build and Deploy'
+        uses: stempienmar/SalesforceDXTest@v2
+        with:
+          type: 'sandbox'
+          certificate_path: server.key.enc
+          decryption_key: ${{ secrets.DECRYPTION_KEY_NON_PRODUCTIVE }}
+          decryption_iv: ${{ secrets.DECRYPTION_IV_NON_PRODUCTIVE }}
+          client_id: ${{ secrets.CONSUMER_KEY }}
+          username: ${{ secrets.USERNAME }}
+          checkonly: true
+          deploy_wait_time: '10'
+          manifest_path: manifest/package.xml
+          destructive_path: destructive
+          data_factory: scripts/apex/CreateBaseData.apex
+          default_source_path: force-app/main/default
